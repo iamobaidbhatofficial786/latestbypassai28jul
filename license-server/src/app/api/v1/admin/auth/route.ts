@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
 
     return response;
   } catch (error: any) {
-    return NextResponse.json({ success: false, error: "Login failed." }, { status: 500 });
+    return NextResponse.json({ success: false, error: "Login failed: " + (error?.message || String(error)) }, { status: 500 });
   }
 }
 
