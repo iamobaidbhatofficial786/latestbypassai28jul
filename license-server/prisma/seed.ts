@@ -9,23 +9,20 @@ async function main() {
 
   console.log(`[Seed] Checking initial admin account (${adminEmail})...`);
 
-  const existing = await prisma.adminUser.findUnique({
+  const passwordHash = await bcrypt.hash(adminPassword, 12);
+  
+  await prisma.adminUser.upsert({
     where: { email: adminEmail },
+    update: {
+      passwordHash: passwordHash,
+    },
+    create: {
+      email: adminEmail,
+      passwordHash: passwordHash,
+      role: "SUPERADMIN",
+    },
   });
-
-  if (!existing) {
-    const passwordHash = await bcrypt.hash(adminPassword, 12);
-    await prisma.adminUser.create({
-      data: {
-        email: adminEmail,
-        passwordHash: passwordHash,
-        role: "SUPERADMIN",
-      },
-    });
-    console.log(`[Seed] Initial admin account created successfully!`);
-  } else {
-    console.log(`[Seed] Admin account already exists.`);
-  }
+  console.log(`[Seed] Admin account (${adminEmail}) configured successfully!`);
 
   // Seed default configuration settings
   const configs = [
