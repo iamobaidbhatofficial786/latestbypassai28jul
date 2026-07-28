@@ -146,7 +146,9 @@
       var res = await activateLicense(val);
       if (res.success) {
         overlay.remove();
-        alert("License successfully activated!");
+        if (typeof window !== "undefined" && window.location) {
+          window.location.reload();
+        }
       } else {
         btn.innerText = "Activate License";
         btn.disabled = false;

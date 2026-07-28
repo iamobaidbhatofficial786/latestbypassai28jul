@@ -1503,6 +1503,15 @@
   // --- Initialize ---
   (async function init() {
     chrome.storage.local.get(["ql_dark_mode"], r => { if(r.ql_dark_mode === false) document.body.classList.add('sp-light'); });
+    
+    if (typeof LicenseClient !== "undefined") {
+      var check = await LicenseClient.performHeartbeatOrValidate();
+      if (!check.valid) {
+        LicenseClient.renderActivationModal();
+        return;
+      }
+    }
+    
     showMainUI();
     syncCreditBypassOnLovableTabs(true);
   })();
