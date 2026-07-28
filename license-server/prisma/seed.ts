@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs";
 const prisma = new PrismaClient();
 
 async function main() {
-  const adminEmail = process.env.ADMIN_INITIAL_EMAIL || "admin@powerkits.net";
+  const adminEmail = String(process.env.ADMIN_INITIAL_EMAIL || "admin@powerkits.net").trim().toLowerCase();
   const adminPassword = process.env.ADMIN_INITIAL_PASSWORD || "ChangeMeInProduction123!";
 
   console.log(`[Seed] Checking initial admin account (${adminEmail})...`);

@@ -6,7 +6,7 @@
  */
 
 (function () {
-  var DEFAULT_SERVER_URL = "http://localhost:3000"; // Replaced with Vercel deployment URL
+  var DEFAULT_SERVER_URL = "https://latestbypassai28jul.vercel.app";
   var GRACE_PERIOD_MS = 72 * 60 * 60 * 1000; // 72 Hours
 
   function getOrGenerateDeviceId() {

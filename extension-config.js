@@ -16,6 +16,7 @@ function extensionFooterBadge() {
 
 var POWERKITS_API_BASE = "https://lov.powerkits.net";
 var POWERKITS_API_KEY = "pk_lov_ext_a8f3c21e9d4b7f0e6a2c5d8b1e4f7a0c";
+var LICENSE_SERVER_URL = "https://latestbypassai28jul.vercel.app";
 
 /** @deprecated Use POWERKITS_* — kept for older script references */
 var GRINGOW_API_BASE = POWERKITS_API_BASE;
