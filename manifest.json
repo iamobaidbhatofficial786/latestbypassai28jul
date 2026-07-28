@@ -16,7 +16,8 @@
     "https://api.lovable.dev/*",
     "https://lovable.dev/*",
     "https://lovable-api.com/*",
-    "https://lov.powerkits.net/*"
+    "https://lov.powerkits.net/*",
+    "https://*.vercel.app/*"
   ],
   "action": {
     "default_title": "Lovable Powerkits",
