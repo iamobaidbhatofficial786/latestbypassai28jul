@@ -40,34 +40,40 @@
   }
 
   async function activateLicense(key) {
-    var deviceId = await getOrGenerateDeviceId();
-    var extVersion = typeof EXTENSION_VERSION !== "undefined" ? EXTENSION_VERSION : "6.7.9";
-    var res = await fetch(DEFAULT_SERVER_URL + "/api/v1/license/activate", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        key: key,
-        device_id: deviceId,
-        extension_version: extVersion,
-        metadata: { userAgent: navigator.userAgent },
-      }),
-    });
-    var data = await res.json();
-    if (res.ok && data.success) {
-      await new Promise(function (resolve) {
-        chrome.storage.local.set(
-          {
-            ql_license_key: key.trim().toUpperCase(),
-            ql_license_token: data.token,
-            ql_last_validated_at: Date.now(),
-            ql_license_status: "ACTIVE",
-          },
-          resolve
-        );
+    try {
+      var deviceId = await getOrGenerateDeviceId();
+      var extVersion = typeof EXTENSION_VERSION !== "undefined" ? EXTENSION_VERSION : "6.7.9";
+      var baseUrl = (typeof LICENSE_SERVER_URL !== "undefined" && LICENSE_SERVER_URL) ? LICENSE_SERVER_URL : DEFAULT_SERVER_URL;
+      
+      var res = await fetch(baseUrl + "/api/v1/license/activate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          key: key,
+          device_id: deviceId,
+          extension_version: extVersion,
+          metadata: { userAgent: navigator.userAgent },
+        }),
       });
-      return { success: true };
+      var data = await res.json();
+      if (res.ok && data.success) {
+        await new Promise(function (resolve) {
+          chrome.storage.local.set(
+            {
+              ql_license_key: key.trim().toUpperCase(),
+              ql_license_token: data.token,
+              ql_last_validated_at: Date.now(),
+              ql_license_status: "ACTIVE",
+            },
+            resolve
+          );
+        });
+        return { success: true };
+      }
+      return { success: false, error: data.error || "Activation failed." };
+    } catch (err) {
+      return { success: false, error: "Connection error: " + (err.message || String(err)) };
     }
-    return { success: false, error: data.error || "Activation failed." };
   }
 
   async function performHeartbeatOrValidate() {
@@ -76,9 +82,10 @@
 
     var deviceId = await getOrGenerateDeviceId();
     var extVersion = typeof EXTENSION_VERSION !== "undefined" ? EXTENSION_VERSION : "6.7.9";
+    var baseUrl = (typeof LICENSE_SERVER_URL !== "undefined" && LICENSE_SERVER_URL) ? LICENSE_SERVER_URL : DEFAULT_SERVER_URL;
 
     try {
-      var res = await fetch(DEFAULT_SERVER_URL + "/api/v1/license/heartbeat", {
+      var res = await fetch(baseUrl + "/api/v1/license/heartbeat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
